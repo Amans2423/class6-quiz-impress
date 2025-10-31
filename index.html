@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Class 6 - OpenOffice Impress & Internet Quiz</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      background: linear-gradient(135deg, #ffd6a5, #caffbf);
+      color: #333;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+    h1 {
+      background-color: #ffb6b9;
+      color: #333;
+      width: 100%;
+      text-align: center;
+      padding: 15px 0;
+      margin: 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    .quiz-container {
+      background-color: #fff;
+      border-radius: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      width: 90%;
+      max-width: 700px;
+      margin-top: 20px;
+      padding: 20px;
+    }
+    .question {
+      margin-bottom: 15px;
+      font-size: 1.05em;
+    }
+    button {
+      background-color: #90e0ef;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 20px;
+      margin-top: 15px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      background-color: #0077b6;
+      color: white;
+    }
+    .result {
+      text-align: center;
+      font-size: 1.2em;
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 12px;
+      background-color: #ffdab9;
+    }
+    .good {
+      background-color: #b9fbc0;
+    }
+    input[type="text"] {
+      padding: 8px;
+      border-radius: 8px;
+      border: 2px solid #0077b6;
+      width: 80%;
+      margin-bottom: 15px;
+      font-size: 1em;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>Class 6 - OpenOffice Impress & Internet Quiz</h1>
+
+  <div class="quiz-container" id="startScreen">
+    <h2>Enter your name to start:</h2>
+    <input type="text" id="studentName" placeholder="Your name here" />
+    <br />
+    <button onclick="startQuiz()">Start Quiz</button>
+  </div>
+
+  <div class="quiz-container" id="quizScreen" style="display:none;">
+    <form id="quizForm">
+      <div id="questions"></div>
+      <button type="button" onclick="submitQuiz()">Submit</button>
+    </form>
+  </div>
+
+  <div class="quiz-container result" id="resultScreen" style="display:none;"></div>
+
+  <script>
+    const quizData = [
+      // OpenOffice Impress Questions
+      { q: "1. OpenOffice Impress is used to create:", options: ["Documents", "Presentations", "Spreadsheets", "Databases"], answer: "Presentations" },
+      { q: "2. The first slide of a presentation is usually called:", options: ["Title Slide", "End Slide", "Animation Slide", "Chart Slide"], answer: "Title Slide" },
+      { q: "3. In Impress, slides are shown one after another using a:", options: ["Transition", "Animation", "Layout", "Template"], answer: "Transition" },
+      { q: "4. Which menu allows you to insert a new slide?", options: ["Insert", "View", "Slide Show", "Format"], answer: "Insert" },
+      { q: "5. To start a slideshow from the beginning, press:", options: ["F5", "F1", "F12", "Ctrl + S"], answer: "F5" },
+      { q: "6. The small versions of slides seen on the left side are called:", options: ["Thumbnails", "Mini Slides", "Icons", "Previews"], answer: "Thumbnails" },
+      { q: "7. Which option is used to add motion to objects on a slide?", options: ["Animation", "Transition", "Layout", "Master Slide"], answer: "Animation" },
+      { q: "8. Background color of a slide can be changed from:", options: ["Slide Design", "Slide Transition", "Slide Layout", "Insert Menu"], answer: "Slide Design" },
+      { q: "9. You can insert pictures in a slide from:", options: ["Insert → Picture", "Tools → Options", "File → Save As", "Format → Picture"], answer: "Insert → Picture" },
+      { q: "10. To duplicate a slide quickly, you can:", options: ["Copy and Paste", "Insert → New Slide", "Use Format Painter", "Use Transition"], answer: "Copy and Paste" },
+      { q: "11. The master slide is used to:", options: ["Add sound", "Set common design for all slides", "Insert chart", "Add hyperlinks"], answer: "Set common design for all slides" },
+      { q: "12. In animation, entrance effect means:", options: ["How object appears", "How object disappears", "How object moves", "How slide changes"], answer: "How object appears" },
+
+      // Internet-related Questions
+      { q: "13. Internet is a:", options: ["Single computer", "Network of computers", "Software", "Database"], answer: "Network of computers" },
+      { q: "14. WWW stands for:", options: ["World Wide Web", "World Web Wide", "Web World Wide", "Wide World Web"], answer: "World Wide Web" },
+      { q: "15. A web page address is also known as:", options: ["URL", "PDF", "HTML", "App"], answer: "URL" },
+      { q: "16. Google Chrome and Mozilla Firefox are examples of:", options: ["Search Engines", "Web Browsers", "Operating Systems", "Apps"], answer: "Web Browsers" },
+      { q: "17. Email is used to:", options: ["Watch movies", "Play games", "Send and receive messages", "Listen to music"], answer: "Send and receive messages" },
+      { q: "18. The full form of ISP is:", options: ["Internet Service Provider", "Internal Server Process", "Internet Software Program", "Information Sharing Portal"], answer: "Internet Service Provider" },
+      { q: "19. To protect your computer online, you should use:", options: ["Antivirus", "Animation", "Transition", "Calculator"], answer: "Antivirus" },
+      { q: "20. True or False: Wi-Fi allows devices to connect to the Internet wirelessly.", options: ["True", "False"], answer: "True" }
+    ];
+
+    function startQuiz() {
+      const name = document.getElementById("studentName").value.trim();
+      if (!name) {
+        alert("Please enter your name!");
+        return;
+      }
+      document.getElementById("startScreen").style.display = "none";
+      document.getElementById("quizScreen").style.display = "block";
+      loadQuestions();
+    }
+
+    function loadQuestions() {
+      const qDiv = document.getElementById("questions");
+      qDiv.innerHTML = "";
+      quizData.forEach((item, index) => {
+        const qHTML = `
+          <div class="question">
+            <p>${item.q}</p>
+            ${item.options
+              .map(opt => `<label><input type="radio" name="q${index}" value="${opt}" required> ${opt}</label><br>`)
+              .join("")}
+          </div>`;
+        qDiv.innerHTML += qHTML;
+      });
+    }
+
+    function submitQuiz() {
+      const form = document.getElementById("quizForm");
+      const formData = new FormData(form);
+      let score = 0;
+
+      quizData.forEach((item, index) => {
+        const selected = formData.get("q" + index);
+        if (selected === item.answer) score++;
+      });
+
+      const name = document.getElementById("studentName").value;
+      let resultMsg = `<h2>Hi ${name}!</h2><p>You scored ${score} out of ${quizData.length}.</p>`;
+      if (score >= 14) resultMsg += `<p class="good">🎉 Good Job! 🎉</p>`;
+      resultMsg += `<button onclick="restartQuiz()">Try Again</button>`;
+
+      document.getElementById("quizScreen").style.display = "none";
+      const resultScreen = document.getElementById("resultScreen");
+      resultScreen.innerHTML = resultMsg;
+      resultScreen.style.display = "block";
+    }
+
+    function restartQuiz() {
+      document.getElementById("resultScreen").style.display = "none";
+      document.getElementById("quizScreen").style.display = "none";
+      document.getElementById("startScreen").style.display = "block";
+      document.getElementById("studentName").value = "";
+    }
+  </script>
+</body>
+</html>
